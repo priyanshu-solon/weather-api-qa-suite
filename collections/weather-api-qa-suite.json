@@ -1,0 +1,277 @@
+{
+  "info": {
+    "_postman_id": "2c0cfe0c-1852-4857-9808-f8d7e32f9f1f",
+    "name": "Weather API QA Suite",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+    "_exporter_id": "32922407",
+    "_collection_link": "https://go.postman.co/collection/32922407-2c0cfe0c-1852-4857-9808-f8d7e32f9f1f?source=collection_link"
+  },
+  "item": [
+    {
+      "name": "Geocoding Test (Nominatim)",
+      "item": [
+        {
+          "name": "GET - Valid City (Get Coordinates)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "const res = pm.response.json();\r",
+                  "\r",
+                  "// check API success\r",
+                  "pm.test(\"Status is 200\", () => {\r",
+                  "    pm.response.to.have.status(200);\r",
+                  "});\r",
+                  "\r",
+                  "// check response type\r",
+                  "pm.test(\"Response is array\", () => {\r",
+                  "    pm.expect(res).to.be.an(\"array\");\r",
+                  "});\r",
+                  "\r",
+                  "// save coordinates\r",
+                  "if (res.length > 0) {\r",
+                  "    pm.environment.set(\"lat\", res[0].lat);\r",
+                  "    pm.environment.set(\"lon\", res[0].lon);\r",
+                  "}"
+                ],
+                "type": "text/javascript",
+                "packages": {},
+                "requests": {}
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "User-Agent",
+                "value": "weather-intel-app (priyanshusolon2001@gmail.com)",
+                "type": "text"
+              },
+              {
+                "key": "Accept",
+                "value": "application/json",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{geo_url}}/search?q={{city}}&format=json",
+              "host": [
+                "{{geo_url}}"
+              ],
+              "path": [
+                "search"
+              ],
+              "query": [
+                {
+                  "key": "q",
+                  "value": "{{city}}"
+                },
+                {
+                  "key": "format",
+                  "value": "json"
+                }
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "GET - Invalid City",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "const res = pm.response.json();\r",
+                  "\r",
+                  "// check API success\r",
+                  "pm.test(\"Status is 200\", () => {\r",
+                  "    pm.response.to.have.status(200);\r",
+                  "});\r",
+                  "\r",
+                  "// check response type\r",
+                  "pm.test(\"Response is array\", () => {\r",
+                  "    pm.expect(res).to.be.an(\"array\");\r",
+                  "});\r",
+                  "\r",
+                  "// save coordinates\r",
+                  "if (res.length > 0) {\r",
+                  "    pm.environment.set(\"lat\", res[0].lat);\r",
+                  "    pm.environment.set(\"lon\", res[0].lon);\r",
+                  "}"
+                ],
+                "type": "text/javascript",
+                "packages": {},
+                "requests": {}
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "User-Agent",
+                "value": "weather-intel-app (priyanshusolon2001@gmail.com)",
+                "type": "text"
+              },
+              {
+                "key": "Accept",
+                "value": "application/json",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{geo_url}}/search?q=asdasd123&format=json",
+              "host": [
+                "{{geo_url}}"
+              ],
+              "path": [
+                "search"
+              ],
+              "query": [
+                {
+                  "key": "q",
+                  "value": "asdasd123"
+                },
+                {
+                  "key": "format",
+                  "value": "json"
+                }
+              ]
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "Weather Tests (Open-Meteo)",
+      "item": [
+        {
+          "name": "GET - Valid Coordinates (Get Weather)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "const res = pm.response.json();\r",
+                  "\r",
+                  "pm.test(\"Status is 200\", () => {\r",
+                  "    pm.response.to.have.status(200);\r",
+                  "});\r",
+                  "\r",
+                  "pm.test(\"Weather exists\", () => {\r",
+                  "    pm.expect(res).to.have.property(\"current_weather\");\r",
+                  "});"
+                ],
+                "type": "text/javascript",
+                "packages": {},
+                "requests": {}
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{weather_url}}/v1/forecast?latitude={{lat}}&longitude={{lon}}&current_weather=true",
+              "host": [
+                "{{weather_url}}"
+              ],
+              "path": [
+                "v1",
+                "forecast"
+              ],
+              "query": [
+                {
+                  "key": "latitude",
+                  "value": "{{lat}}"
+                },
+                {
+                  "key": "longitude",
+                  "value": "{{lon}}"
+                },
+                {
+                  "key": "current_weather",
+                  "value": "true"
+                }
+              ]
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "End-to-End Flow",
+      "item": [
+        {
+          "name": "GET - City → Weather (Chained Flow)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test(\"End-to-End flow works\", () => {\r",
+                  "    const lat = pm.environment.get(\"lat\");\r",
+                  "    const lon = pm.environment.get(\"lon\");\r",
+                  "\r",
+                  "    pm.expect(lat).to.exist;\r",
+                  "    pm.expect(lon).to.exist;\r",
+                  "});\r",
+                  "\r",
+                  "pm.test(\"Weather API Success\", function () {\r",
+                  "    pm.response.to.have.status(200);\r",
+                  "});\r",
+                  "\r",
+                  "pm.test(\"Temperature exists\", function () {\r",
+                  "    let json = pm.response.json();\r",
+                  "    pm.expect(json.current_weather).to.have.property(\"temperature\");\r",
+                  "});\r",
+                  ""
+                ],
+                "type": "text/javascript",
+                "packages": {},
+                "requests": {}
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "https://api.open-meteo.com/v1/forecast?latitude={{lat}}&longitude={{lon}}&current_weather=true",
+              "protocol": "https",
+              "host": [
+                "api",
+                "open-meteo",
+                "com"
+              ],
+              "path": [
+                "v1",
+                "forecast"
+              ],
+              "query": [
+                {
+                  "key": "latitude",
+                  "value": "{{lat}}"
+                },
+                {
+                  "key": "longitude",
+                  "value": "{{lon}}"
+                },
+                {
+                  "key": "current_weather",
+                  "value": "true"
+                }
+              ]
+            }
+          },
+          "response": []
+        }
+      ]
+    }
+  ]
+}
